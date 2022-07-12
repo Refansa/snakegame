@@ -20,9 +20,7 @@
         justify-content: center;
         align-items: center;
         min-width: 100vw;
-        max-width: 100vw;
         min-height: 100vh;
-        max-height: 100vh;
       }
 
       #board {
@@ -33,8 +31,25 @@
         border: #222 solid 4px;
       }
 
+      #controller {
+        display: none;
+      }
+
       @media (max-width: 750px) {
         #board {
+          width: 300px;
+          height: 300px;
+        }
+
+        #game {
+          height: auto;
+        }
+
+        #controller {
+          margin: 2rem 0;
+          display: grid;
+          grid-template-columns: repeat(3, 100px);
+          grid-template-rows: repeat(3, 100px);
           width: 300px;
           height: 300px;
         }
@@ -85,6 +100,7 @@
       }
     </style>
   </head>
+
   <body>
     <div id="menu">
       <h1 style="margin-bottom: 2rem">Snake</h1>
@@ -93,6 +109,17 @@
     <div id="game" class="hidden">
       <h1 class="score"></h1>
       <canvas id="board" height="500" width="500"></canvas>
+      <div id="controller">
+        <div></div>
+        <button class="btn" id="up" onclick="move('Up')"></button>
+        <div></div>
+        <button class="btn" id="left" onclick="move('Left')"></button>
+        <div></div>
+        <button class="btn" id="right" onclick="move('Right')"></button>
+        <div></div>
+        <button class="btn" id="down" onclick="move('Down')"></button>
+        <div></div>
+      </div>
       <script type="text/javascript" src="fruit.js"></script>
       <script type="text/javascript" src="snake.js"></script>
       <script type="text/javascript" src="draw.js"></script>
