@@ -1,15 +1,16 @@
 class Snake {
   constructor() {
-    this.x = 0;
-    this.y = 0;
+    this.total = 6;
+    this.nextLevel = 10;
+    this.x = (this.total - 3) * scale;
+    this.y = 3 * scale;
     this.xSpeed = scale * 1;
     this.ySpeed = 0;
-    this.total = 3;
     this.tail = [];
     this.currentDirection = 'Right';
 
     this.draw = function () {
-      ctx.fillStyle = '#006500';
+      ctx.fillStyle = '#4876ec';
       for (let i = 0; i < this.tail.length; i++) {
         ctx.fillRect(this.tail[i].x, this.tail[i].y, scale, scale);
       }
@@ -47,6 +48,7 @@ class Snake {
     this.changeDirection = function (direction) {
       switch (direction) {
         case 'Up':
+        case 'w':
           if (this.currentDirection !== 'Down') {
             this.currentDirection = 'Up';
             this.xSpeed = 0;
@@ -54,6 +56,7 @@ class Snake {
           }
           break;
         case 'Down':
+        case 's':
           if (this.currentDirection !== 'Up') {
             this.currentDirection = 'Down';
             this.xSpeed = 0;
@@ -61,6 +64,7 @@ class Snake {
           }
           break;
         case 'Left':
+        case 'a':
           if (this.currentDirection !== 'Right') {
             this.currentDirection = 'Left';
             this.xSpeed = -scale * 1;
@@ -68,6 +72,7 @@ class Snake {
           }
           break;
         case 'Right':
+        case 'd':
           if (this.currentDirection !== 'Left') {
             this.currentDirection = 'Right';
             this.xSpeed = scale * 1;
@@ -89,14 +94,14 @@ class Snake {
       for (var i = 0; i < this.tail.length; i++) {
         if (this.x === this.tail[i].x && this.y === this.tail[i].y) {
           clearInterval(loop);
-          alert('Game Over!\nScore: ' + (this.total - 3));
+          alert('Game Over!\nScore: ' + this.total + '\nTimer: ' + timer);
           menu.classList.toggle('hidden');
           game.classList.toggle('hidden');
         }
       }
     };
 
-    this.checkFruitUnderTail = function () {
+    this.checkFruitUnderTail = function (fruit) {
       for (var i = 0; i < this.tail.length; i++) {
         if (fruit.x === this.tail[i].x && fruit.y === this.tail[i].y) {
           fruit.pickLocation();

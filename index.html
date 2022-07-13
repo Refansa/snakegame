@@ -26,8 +26,9 @@
       #board {
         background-image: url('./board.svg');
         background-size: cover;
-        width: 500px;
-        height: 500px;
+        width: 960px;
+        height: 600px;
+        scale: 1;
         border: #222 solid 4px;
       }
 
@@ -37,8 +38,8 @@
 
       @media (max-width: 750px) {
         #board {
-          width: 300px;
-          height: 300px;
+          width: calc(960px * 4 / 10);
+          height: calc(600px * 4 / 10);
         }
 
         #game {
@@ -55,7 +56,7 @@
         }
       }
 
-      .score {
+      h1 {
         color: white;
         margin-bottom: 1rem;
       }
@@ -108,7 +109,8 @@
     </div>
     <div id="game" class="hidden">
       <h1 class="score"></h1>
-      <canvas id="board" height="500" width="500"></canvas>
+      <h1 class="timer"></h1>
+      <canvas id="board" height="600" width="960"></canvas>
       <div id="controller">
         <div></div>
         <button class="btn" id="up" onclick="move('Up')"></button>
