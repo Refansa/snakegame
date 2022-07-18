@@ -1,84 +1,81 @@
 class Snake {
-  constructor() {
-    this.total = 6;
-    this.nextLevel = 10;
-    this.x = (this.total - 3) * scale;
-    this.y = 3 * scale;
-    this.xSpeed = scale * 1;
-    this.ySpeed = 0;
-    this.tail = [];
-    this.currentDirection = 'Right';
+  constructor(scale) {
+    this.reset = function () {
+      this.x = (this.total - 3) * scale;
+      this.y = 3 * scale;
+      this.xSpeed = scale * 1;
+      this.ySpeed = 0;
+      this.changingDirection = false;
+      this.currentDirection = 'Right';
+
+      this.body = [];
+      this.total = 6;
+    };
 
     this.draw = function () {
-      ctx.fillStyle = '#4876ec';
-      for (let i = 0; i < this.tail.length; i++) {
-        ctx.fillRect(this.tail[i].x, this.tail[i].y, scale, scale);
-      }
+      ctx.fillStyle = '#fff';
+      ctx.strokeStyle = '#aaa';
 
-      ctx.fillRect(this.x, this.y, scale, scale);
+      this.body.forEach((body) => {
+        ctx.fillRect(body.x, body.y, scale, scale);
+        ctx.strokeRect(body.x, body.y, scale, scale);
+      });
     };
 
     this.update = function () {
-      for (let i = 0; i < this.tail.length - 1; i++) {
-        this.tail[i] = this.tail[i + 1];
-      }
+      // Update the position of the body
+      this.body.unshift({
+        x: this.x,
+        y: this.y,
+      });
+      this.body.pop();
 
-      this.tail[this.total - 1] = { x: this.x, y: this.y };
+      // Always add body based on the total score
+      this.body[this.total] = {
+        x: this.x,
+        y: this.y,
+      };
 
       this.x += this.xSpeed;
       this.y += this.ySpeed;
+    };
 
-      if (this.x > canvas.width - scale) {
+    this.checkWallCollision = function () {
+      if (this.x > canvasWidth - scale) {
         this.x = 0;
       }
 
-      if (this.y > canvas.height - scale) {
+      if (this.y > canvasHeight - scale) {
         this.y = 0;
       }
 
       if (this.x < 0) {
-        this.x = canvas.width;
+        this.x = canvasWidth;
       }
 
       if (this.y < 0) {
-        this.y = canvas.height;
+        this.y = canvasHeight;
       }
     };
 
-    this.changeDirection = function (direction) {
-      switch (direction) {
-        case 'Up':
-        case 'w':
-          if (this.currentDirection !== 'Down') {
-            this.currentDirection = 'Up';
-            this.xSpeed = 0;
-            this.ySpeed = -scale * 1;
-          }
-          break;
-        case 'Down':
-        case 's':
-          if (this.currentDirection !== 'Up') {
-            this.currentDirection = 'Down';
-            this.xSpeed = 0;
-            this.ySpeed = scale * 1;
-          }
-          break;
-        case 'Left':
-        case 'a':
-          if (this.currentDirection !== 'Right') {
-            this.currentDirection = 'Left';
-            this.xSpeed = -scale * 1;
-            this.ySpeed = 0;
-          }
-          break;
-        case 'Right':
-        case 'd':
-          if (this.currentDirection !== 'Left') {
-            this.currentDirection = 'Right';
-            this.xSpeed = scale * 1;
-            this.ySpeed = 0;
-          }
-      }
+    this.checkBodyCollision = function (loop) {
+      this.body.forEach((body) => {
+        if (this.x === body.x && this.y === body.y) {
+          clearInterval(loop);
+          alert('Game Over!');
+          toggleGame();
+        }
+      });
+    };
+
+    this.checkFruitUnderBody = function (fruit) {
+      this.body.forEach((body) => {
+        if (fruit.x === body.x && fruit.y === body.y) {
+          console.log('Fruit under body');
+          return true;
+        }
+        return false;
+      });
     };
 
     this.eat = function (fruit) {
@@ -86,27 +83,53 @@ class Snake {
         this.total++;
         return true;
       }
-
       return false;
     };
 
-    this.checkCollision = function (loop) {
-      for (var i = 0; i < this.tail.length; i++) {
-        if (this.x === this.tail[i].x && this.y === this.tail[i].y) {
-          clearInterval(loop);
-          alert('Game Over!\nScore: ' + this.total + '\nTimer: ' + timer);
-          menu.classList.toggle('hidden');
-          game.classList.toggle('hidden');
-        }
+    this.changeDirection = function (e) {
+      if (isPaused) return;
+      if (this.changingDirection) return;
+      this.changingDirection = true;
+
+      switch (e.key) {
+        case 'a':
+        case '65':
+          if (this.currentDirection !== 'Right') {
+            this.currentDirection = 'Left';
+            this.xSpeed = -scale * 1;
+            this.ySpeed = 0;
+          }
+          break;
+        case 'd':
+        case '68':
+          if (this.currentDirection !== 'Left') {
+            this.currentDirection = 'Right';
+            this.xSpeed = scale * 1;
+            this.ySpeed = 0;
+          }
+          break;
+        case 'w':
+        case '87':
+          if (this.currentDirection !== 'Down') {
+            this.currentDirection = 'Up';
+            this.xSpeed = 0;
+            this.ySpeed = -scale * 1;
+          }
+          break;
+        case 's':
+        case '83':
+          if (this.currentDirection !== 'Up') {
+            this.currentDirection = 'Down';
+            this.xSpeed = 0;
+            this.ySpeed = scale * 1;
+          }
+          break;
+
+        default:
+          break;
       }
     };
 
-    this.checkFruitUnderTail = function (fruit) {
-      for (var i = 0; i < this.tail.length; i++) {
-        if (fruit.x === this.tail[i].x && fruit.y === this.tail[i].y) {
-          fruit.pickLocation();
-        }
-      }
-    };
+    this.reset();
   }
 }
